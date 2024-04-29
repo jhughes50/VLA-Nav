@@ -13,8 +13,8 @@ sys.path.append(PROJECT_ROOT)
 
 from lib.path_dataloader import PathDataLoader
 from lib.pose_extractor import PoseExtractor
-from lib.pose_encoder import PoseEncoder
-from lib.pose_decoder import PoseDecoder
+from models.pose_encoder_large import PoseEncoderTransformer
+from models.pose_decoder_large import PoseDecoderTransformer
 
 import torch
 import torch.nn as nn
