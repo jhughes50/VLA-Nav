@@ -63,15 +63,19 @@ def train(encoder, decoder, optimizer, dataloader, epochs):
 if __name__ == "__main__":
    
     input_dim = 96
-    hidden_dim = 512
+    hidden_dim = 256
     output_dim = 512
+    model_dim = 256
+    num_heads = 3
+    num_layers = 2
+    dropout = 0.2
 
     epochs = 10
 
     dataloader = PathDataLoader(DATA_PATH, interpolate=True, out_dim=96)
 
-    encoder = PoseEncoder(input_dim, hidden_dim, output_dim)
-    decoder = PoseDecoder(input_dim, hidden_dim, output_dim)
+    encoder = PoseEncoderTransformer(output_dim, model_dim, num_heads, hidden_dim, num_layers, dropout)
+    decoder = PoseDecoderTransformer(input_dim, model_dim, num_heads, hidden_dim, num_layers, dropout)
 
     optimizer = torch.optim.Adam(list(encoder.parameters()) + list(decoder.parameters()), lr=1e-3)
 
