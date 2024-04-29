@@ -21,16 +21,16 @@ WORKDIR /home/$USER
 # setup conda
 COPY --from=miniconda /opt/conda /opt/conda
 RUN chown -R $USER: /opt/conda 
-#RUN chown -R $USER: /home/$USER
-#USER $USER
+RUN chown -R $USER: /home/$USER
+USER $USER
 # habitat conda install
-RUN echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc && \
-    echo "conda activate base" >> ~/.bashrc
+RUN echo ". /opt/conda/etc/profile.d/conda.sh" >> /home/$USER/.bashrc && \
+    echo "conda activate base" >> /home/$USER/.bashrc
 SHELL ["/bin/bash", "-c"]
 RUN source /opt/conda/etc/profile.d/conda.sh && conda init bash && conda create -n habitat -y python=3.9 cmake=3.14.0 && conda activate habitat && conda install habitat-sim headless -c conda-forge -c aihabitat -y && conda install pytorch pytorch-cuda=12.1 -c pytorch -c nvidia -y
 
 #install CLIP-ViL dependencies
-RUN pip3 install tqdm stanza tensorboardX openai-clip
+#RUN pip3 install tqdm stanza tensorboardX openai-clip
 
 #USER $USER
 WORKDIR /home/$USER

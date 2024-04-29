@@ -1,4 +1,5 @@
 lib/__pycache__/
 utils/__pycache__/
 models/*.pth
-
+secrets/*.pem
+.bash_history
