@@ -80,7 +80,8 @@ class PoseExtractor:
         return self.interpolator_.interpolate(path)
 
 
-    def load(self, path):
+    def load(self):
+        path = self.generic_path_ + "rxr-data/rxr_train_guide.jsonl.gz"
         with gzip.open(path, 'r') as f:
             print("[PoseExtractor] found file %s, loading..." %path)
             self.train_guide_ = [json.loads(line) for line in f]
@@ -92,6 +93,7 @@ class PoseExtractor:
             pose_trace = np.load(pose_path)
             poses = pose_trace["extrinsic_matrix"][:,:-1,-1]
         except FileNotFoundError:
+            print("file not found at %s" %pose_path)
             return np.array([])
         self.matcher_.match(pose_trace["pano"])
         unique_poses = self.matcher_.poses_from_match(poses)
@@ -100,7 +102,7 @@ class PoseExtractor:
     def get_path(self, subguide):
         inst_id = subguide['instruction_id']
         pose_path = self.generic_path_+ \
-            "pose_traces/rxr_train/{:06}_guide_pose_trace.npz".format(inst_id)
+            "rxr-data/pose_traces/rxr_train/{:06}_guide_pose_trace.npz".format(inst_id)
 
         return self.get_path_poses(pose_path)
 
@@ -113,7 +115,7 @@ class PoseExtractor:
         
         instruction_id = guide["instruction_id"]
         pose_path = self.generic_path_+ \
-            "pose_traces/rxr_train/{:06}_guide_pose_trace.npz".format(instruction_id)
+            "rxr-data/pose_traces/rxr_train/{:06}_guide_pose_trace.npz".format(instruction_id)
             
         unique_poses = self.get_path_poses(pose_path)
         return unique_poses

@@ -17,6 +17,7 @@ class PathDataLoader(Dataset, PoseExtractor):
         # @param: out_dim: the dimension of the output path when interpolated
         super().__init__(path, out_dim)
         self.interp_ = interpolate
+        self.load()
 
     def __len__(self):
         return len(self.train_guide_)
