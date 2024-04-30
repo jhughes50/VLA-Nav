@@ -59,9 +59,9 @@ def train(encoder, decoder, optimizer, dataloader, epochs):
         
             fe.write(str(loss.item())+"\n")
         print("[PRETRAIN] Saving epoch: %s with loss: %s" %(ep, loss))
-        # save the model as each epoch
+
         fe.close()
-    
+        # save the model epoch 
         torch.save(encoder.state_dict(), MODEL_PATH+"encoder_epoch%s.pth" %ep)
         torch.save(decoder.state_dict(), MODEL_PATH+"decoder_epoch%s.pth" %ep)
     
