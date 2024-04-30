@@ -5,7 +5,7 @@
 """
 
 import numpy as np
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset
 from transformers import AutoModel, AutoTokenizer, AutoImageProcessor, ViTModel
 from PIL import Image
 import torch
@@ -23,7 +23,7 @@ class TextImagePathDataset(Dataset):
         self.text_model = AutoModel.from_pretrained('bert-base-uncased')
        
     def __len__(self):
-        return len(self.img_paths)
+        return len(self.image_paths)
     
     def __getitem__(self, idx):
         #process text

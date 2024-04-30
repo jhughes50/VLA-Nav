@@ -30,4 +30,12 @@ class CLIPP(nn.Module):
         logits_per_text_path = logits_per_path_text.t()
 
         return logits_per_text_path, logits_per_path_text, logits_per_images_path, logits_per_path_images
+    
+    def compute_loss(logits_per_text_path, logits_per_path_text, logits_per_images_path, logits_per_path_images):
+        #compute loss
+        loss = F.cross_entropy(logits_per_text_path, torch.arange(logits_per_text_path.shape[0]))
+        loss += F.cross_entropy(logits_per_path_text, torch.arange(logits_per_path_text.shape[0]))
+        loss += F.cross_entropy(logits_per_images_path, torch.arange(logits_per_images_path.shape[0]))
+        loss += F.cross_entropy(logits_per_path_images, torch.arange(logits_per_path_images.shape[0]))
+        return loss
         
