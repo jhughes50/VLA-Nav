@@ -25,6 +25,6 @@ def main(path):
 
 if __name__ == "__main__":
 
-    path = "/home/jasonah/data/VLA-Nav-Data/rxr-data/"
+    path = "/home/jasonah/data/rxr-data/"
     main( path )
 

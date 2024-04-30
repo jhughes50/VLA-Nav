@@ -11,6 +11,8 @@ from lib.pose_extractor import PoseExtractor
 from lib.frame_extractor import ImageExtractor
 from lib.text_extractor import TextExtractor
 
+from input_data import 
+
 class BaseExtractor(PoseExtractor, ImageExtractor, TextExtractor):
 
     def __init__(self, path): 

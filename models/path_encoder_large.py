@@ -41,8 +41,8 @@ class PathEncoderTransformer(nn.Module):
         src = self.linear_in(x)
         src = self.pos_encoder(src)
         output = self.transformer_encoder(src)
-        output = self.linear_out(output).squeeze()
-        output = output.sum(0)
+        output = self.linear_out(output)#.squeeze()
+        #output = output.sum(0)
 
         return output
 

@@ -13,8 +13,8 @@ sys.path.append(PROJECT_ROOT)
 
 from lib.path_dataloader import PathDataLoader
 from lib.pose_extractor import PoseExtractor
-from models.path_encoder_large import PathEncoderTransformer
-from models.path_decoder_large import PathDecoderTransformer
+from models.path_encoder_medium import PathEncoderMedium
+from models.path_decoder_medium import PathDecoderMedium
 
 import torch
 import torch.nn as nn
@@ -37,7 +37,7 @@ def train(encoder, decoder, optimizer, dataloader, epochs):
     print("[PRETRAIN] Decoder on cuda: ", next(decoder.parameters()).is_cuda)
 
     torch.save(encoder.state_dict(), MODEL_PATH+"encoder_test.pth")
-    ft = open(MODEL_PATH+"loss_total.log", 'w')
+    ft = open(MODEL_PATH+"loss_medium_total.log", 'w')
     
     criterion = nn.MSELoss()
 
@@ -46,7 +46,7 @@ def train(encoder, decoder, optimizer, dataloader, epochs):
 
     for ep in range(epochs):
         print("[PRETRAIN] Training epoch %s..." %ep)
-        fe = open(MODEL_PATH+"loss_epoch_%s.log" %ep, 'w')
+        fe = open(MODEL_PATH+"loss__medium_epoch_%s.log" %ep, 'w')
         counter = 1
         for p in dataloader:
             if isinstance(p, type(None)):
@@ -79,8 +79,8 @@ def train(encoder, decoder, optimizer, dataloader, epochs):
 
         fe.close()
         # save the model epoch 
-        torch.save(encoder.state_dict(), MODEL_PATH+"encoder_epoch%s.pth" %ep)
-        torch.save(decoder.state_dict(), MODEL_PATH+"decoder_epoch%s.pth" %ep)
+        torch.save(encoder.state_dict(), MODEL_PATH+"encoder_medium_epoch%s.pth" %ep)
+        torch.save(decoder.state_dict(), MODEL_PATH+"decoder_medium_epoch%s.pth" %ep)
     
         ft.write(str(avg_loss)+"\n")
     
@@ -102,8 +102,8 @@ if __name__ == "__main__":
 
     dataloader = PathDataLoader(DATA_PATH, interpolate=True, out_dim=96)
 
-    encoder = PathEncoderTransformer(input_dim, output_dim, model_dim, num_heads, hidden_dim, num_layers, dropout)
-    decoder = PathDecoderTransformer(input_dim, output_dim, model_dim, num_heads, hidden_dim, num_layers, dropout)
+    encoder = PathEncoderMedium(input_dim, hidden_dim, output_dim)
+    decoder = PathDecoderMedium(input_dim, hidden_dim, output_dim)
 
     optimizer = torch.optim.Adam(list(encoder.parameters()) + list(decoder.parameters()), lr=1e-3)
 
