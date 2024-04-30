@@ -3,3 +3,4 @@ utils/__pycache__/
 models/*.pth
 secrets/*.pem
 .bash_history
+data/
