@@ -1,20 +1,27 @@
 """
     CIS 6200 -- Deep Learning Final Project
-    Dataloader for all vision language and path
+    dataloader for vision, language and path
     April 2024
 """
+import torch
 
-from lib.base_extractor import BaseExtractor
-from torch.utils.data import Dataset
+class VLADataLoader:
 
-class VLADataLoader(Dataset):
+    def __init__(self, dataset, batch_size=16):
 
-    def __init__(self, file_path):
-        super().__init__()
-        self.be = BaseExtractor(file_path)
+        self.dataset_ = dataset
+        self.batch_size_ = batch_size
+        self.slice_ = [0, batch_size]
 
     def __len__(self):
-        return len(be.guide)
+        return len(self.dataset_.be.guide)// self.batch_size_
 
     def __getitem__(self, idx):
-        return self.be.extract(idx)
+        self.slice_ = [idx*self.batch_size_, idx*self.batch_size_ + self.batch_size_]
+        self.batchify()
+
+    def batchify(self, idx):
+        # loop and create combinations
+        fill = 0
+        while fill < self.batch_size_:
+            pass
