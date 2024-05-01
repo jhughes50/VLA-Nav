@@ -48,6 +48,8 @@ def train(encoder, decoder, optimizer, dataloader, epochs):
         print("[PRETRAIN] Training epoch %s..." %ep)
         fe = open(MODEL_PATH+"loss__medium_epoch_%s.log" %ep, 'w')
         counter = 1
+        total_loss = 0
+        avg_loss = 0
         for p in dataloader:
             if isinstance(p, type(None)):
                 continue
