@@ -44,7 +44,7 @@ class PathDecoderTransformer(nn.Module):
 
     def forward(self, emb):
         emb = self.linear_in(emb)
-        emb = self.pos_encoder(emb)
+        #emb = self.pos_encoder(emb)
         output = self.transformer_decoder(emb)
         
         output = self.linear_out(output).squeeze()

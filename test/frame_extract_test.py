@@ -34,19 +34,19 @@ def main(path):
         print("found file %s, loading..." %path)
         for line in f:
             guide.append(json.loads(line))
-            if len(guide) == 2:
-                break
+            #if len(guide) == 2:
+            #    break
 
     for subguide in guide:
         print(subguide)
-        rgb = im.get_image( subguide )
+        ##if subguide["instruction_id"] == 14:
+        rgb = im.get_images( subguide )
         print("rgb: ", len(rgb))
         print_images(rgb)
-        
         
 
 if __name__ == "__main__":
 
-    path = "/home/jasonah/data/VLA-Nav-Data/rxr-data/" 
+    path = "/home/jasonah/data/rxr-data/" 
     main( path )
 

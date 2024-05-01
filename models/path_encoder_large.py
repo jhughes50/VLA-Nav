@@ -17,32 +17,25 @@ class PathEncoderTransformer(nn.Module):
 
         super().__init__()
        
-        self.model_type = 'Transformer'
-        self.pos_encoder = PositionalEncoding(model_dim, dropout, 1024)
+        self.pos_encoder = nn.Parameter(torch.randn(input_dim, 1, model_dim))
+        self.input_projection = nn.Sequential(nn.Conv1d(input_dim, 128, 1), nn.ReLU(),
+                                              nn.Conv1d(128, 256, 1), nn.ReLU(),
+                                              nn.Conv1d(256, model_dim, 1), nn.ReLU())
+
+
         encoder_layers = TransformerEncoderLayer(model_dim, num_heads, hidden_dim, dropout)
         self.transformer_encoder = TransformerEncoder(encoder_layers, num_layers)
-        
-        self.linear_in = nn.Linear(input_dim, model_dim)
 
         self.d_model_ = model_dim
         self.linear_out = nn.Linear(model_dim, output_dim)
 
-        self.init_weights()
-
-    def init_weights(self):
-        initrange = 0.1
-        self.linear_in.bias.data.zero_()
-        self.linear_in.weight.data.uniform_(-initrange, initrange)
-
-        self.linear_out.bias.data.zero_()
-        self.linear_out.weight.data.uniform_(-initrange, initrange)
 
     def forward(self, x):
-        src = self.linear_in(x)
-        src = self.pos_encoder(src)
+        src = self.input_projection(x).permute(2,0,1)
+
         output = self.transformer_encoder(src)
         output = self.linear_out(output).squeeze()
-        output = output.sum(0)
+        output = output.mean(0)
 
         return output
 
