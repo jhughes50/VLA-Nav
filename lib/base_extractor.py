@@ -11,7 +11,7 @@ from lib.pose_extractor import PoseExtractor
 from lib.frame_extractor import ImageExtractor
 from lib.text_extractor import TextExtractor
 
-from input_data import 
+from lib.input_data import InputData
 
 class BaseExtractor(PoseExtractor, ImageExtractor, TextExtractor):
 
@@ -38,11 +38,14 @@ class BaseExtractor(PoseExtractor, ImageExtractor, TextExtractor):
         subguide = self.rxr_guide_[idx]
 
         text = self.get_text(subguide)
+        #if text == None:
+        #    print("[BASE-EXTRACTOR] text was not english, skipping...")
+        #    return InputData(None, None, None)
         image = self.get_images(subguide)
         path = self.get_path(subguide)
-        poses = self.interpolate(path)
+        #path = self.interpolate(path)
 
-        return InputData(image, text, poses)
+        return InputData(text, image, path)
 
 
 

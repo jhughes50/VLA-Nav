@@ -30,9 +30,11 @@ class HabitatWrapper:
         return self.sim_.agents[0].scene_node.transformation_matrix()
  
     def update_sim(self, scene_id):
-        print("[SIM WRAPPER] Updating sim")
+        print("[SIM WRAPPER] Updating sim at %s" %scene_id)
         if scene_id != self.prev_scene_id_:
             self.prev_scene_id_ = scene_id
+            #if not isinstance(None, type(None)):
+            #    self.sim_.close()
             self.sim_ = habitat_sim.Simulator(self.make_config(scene_id))
         else:
             self.prev_scene_id_ = scene_id
