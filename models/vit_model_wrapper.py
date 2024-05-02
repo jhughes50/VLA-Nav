@@ -4,6 +4,7 @@
     May 2024
 """
 import torch
+from torch import nn
 from transformers import ViTForImageClassification
 from transformers import ViTModel
 from transformers import ViTImageProcessor
@@ -24,7 +25,8 @@ class ViTWrapper:
         print("[VIT-WRAPPER] model on cuda: ", next(self.model_.parameters()).is_cuda)
 
     def model(self, inputs):
-        return self.model_(**inputs)
+        output = self.model_(**inputs)
+        return output.pooler_output
 
     @property
     def optimizer(self):
@@ -44,3 +46,12 @@ class ViTWrapper:
 
     def save(self, output_dir):
         self.model_.save_pretrained(output_dir+"vit-tuned.pth")
+
+
+class ImgHidden(nn.Module):
+
+    def __init__(self, input_dim, output_dim):
+        self.linear = nn.Linear(input_dim, output_dim)
+
+    def forward(self, pooled):
+        return self.linear(pooled)
