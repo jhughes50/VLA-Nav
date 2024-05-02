@@ -38,9 +38,9 @@ class BaseExtractor(PoseExtractor, ImageExtractor, TextExtractor):
         subguide = self.rxr_guide_[idx]
 
         text = self.get_text(subguide)
-        #if text == None:
-        #    print("[BASE-EXTRACTOR] text was not english, skipping...")
-        #    return InputData(None, None, None)
+        if text == None:
+            print("[BASE-EXTRACTOR] text was not english, skipping...")
+            return InputData(None, None, None)
         image = self.get_images(subguide)
         path = self.get_path(subguide)
         #path = self.interpolate(path)

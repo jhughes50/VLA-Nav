@@ -30,19 +30,24 @@ class HabitatWrapper:
         return self.sim_.agents[0].scene_node.transformation_matrix()
  
     def update_sim(self, scene_id):
-        print("[SIM WRAPPER] Updating sim at %s" %scene_id)
         if scene_id != self.prev_scene_id_:
+            print("[SIM-WRAPPER] Updating sim at %s" %scene_id)
             self.prev_scene_id_ = scene_id
-            #if not isinstance(None, type(None)):
-            #    self.sim_.close()
+            if self.sim_ != None:
+                print("[SIM-WRAPPER] Closing old sim")
+                self.sim_.close()
             self.sim_ = habitat_sim.Simulator(self.make_config(scene_id))
+            print("[SIM-WRAPPER] Finished updating")
         else:
             self.prev_scene_id_ = scene_id
-        print("[SIM WRAPPER] Finished updating")
+            print("[SIM WRAPPER] Same scene no need to update")
 
     def get_sensor_obs(self, uuid):
         return self.sim_.get_sensor_observations()[uuid]
-    
+   
+    def close(self):
+        self.sim_.close()
+
     def make_config(self, scene_id):
         scene_file = self.file_path_ + "../data/mp3d/%s/%s.glb" %(scene_id, scene_id)
 
