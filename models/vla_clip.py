@@ -13,10 +13,10 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class CLIP3D:
 
-    def __init__(self, mode, input_path):
+    def __init__(self, mode, input_path, input_dim=768, output_dim=512):
 
-        self.img_model_ = ViTWrapper(mode)
-        self.txt_model_ = BERTWrapper(mode)
+        self.img_model_ = ViTWrapper(mode, input_dim, output_dim)
+        self.txt_model_ = BERTWrapper(mode, input_dim, output_dim)
         self.pth_model_ = PathModelWrapper(mode, input_path)
 
     def encode_text(self, text):

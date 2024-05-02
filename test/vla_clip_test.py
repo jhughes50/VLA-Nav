@@ -6,6 +6,7 @@
 
 import os
 import sys
+import torch
 import numpy as np
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__),os.pardir))
@@ -16,6 +17,8 @@ from lib.vla_dataloader import VLADataLoader
 
 from models.vla_clip import CLIP3D
 
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 def main(path, model_path):
 
     clip = CLIP3D('train', model_path) 
@@ -24,9 +27,16 @@ def main(path, model_path):
     dataloader = VLADataLoader(dataset, 16)
 
     for text, image, path in dataloader:
-        print(len(text)) 
-        print(image.shape)
-        print(path.shape)
+        image = image[:,:,:,:-1]
+        print("[TEST] encoding text")
+        txt_output = clip.encode_text(text)
+        print("[TEST] text output: ", txt_output.shape)
+        print("[TEST] encoding image") 
+        img_output = clip.encode_image(image)
+        print("[TEST] img output: ", img_output.shape)
+        print("[TEST] encoding path")
+        pth_output = clip.encode_path(path)
+        print("[TEST] path output: ", pth_output.shape)
 
     #for data in dataset:
     #    if data.text != None:

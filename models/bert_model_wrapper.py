@@ -15,20 +15,23 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class BERTWrapper:
 
-    def __init__(self, mode):
+    def __init__(self, mode, input_dim, output_dim):
         
         self.model_ = BertModel.from_pretrained("google-bert/bert-base-cased")
         self.model_.to(DEVICE)
         self.tokenizer_ = BertTokenizer.from_pretrained('bert-base-uncased')
         self.optimizer_ = AdamW(self.model_.parameters(), lr=1e-5)
 
+        self.down_sample_ = BERTDownSample(input_dim, output_dim)
+        self.down_sample_.to(DEVICE)
+
         self.set_mode(mode)
         print("[BERT-WRAPPER] model on cuda: ", next(self.model_.parameters()).is_cuda)
-
+        print("[BERT-WRAPPER] downsample layer on cuda: ", next(self.down_sample_.parameters()).is_cuda)
     
     def model(self, inputs):
         output = self.model_(**inputs)
-        return output.pooler_output
+        return self.down_sample_(output.pooler_output)
 
     @property
     def optimizer(self):
@@ -40,8 +43,10 @@ class BERTWrapper:
     def set_mode(self, mode):
         if mode == 'train':
             self.model_.train()
+            self.down_sample_.train()
         elif mode == 'eval':
             self.model_.eval()
+            self.down_sample_.train()
         else:
             print("[BERT-Wrapper] Model mode must be train or eval")
             exit()
@@ -49,9 +54,10 @@ class BERTWrapper:
     def save(self, output_dir):
         self.model_.save_pretrained(output_dir+"bert-tuned.pth")
 
-class TextHidden(nn.Module):
+class BERTDownSample(nn.Module):
 
     def __init__(self, input_dim, output_dim):
+        super().__init__()
         self.linear = nn.Linear(input_dim, output_dim)
 
     def forward(self, pooled):
