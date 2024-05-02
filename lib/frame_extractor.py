@@ -30,7 +30,7 @@ class ImageExtractor:
         x_diff = pose1[0] - pose2[0]
         y_diff = pose1[1] - pose2[1]
         heading = np.arctan2(y_diff, x_diff)
-        #print(heading)
+        
         if heading < 0:
             # make it positive
             heading += 2*np.pi
@@ -55,7 +55,7 @@ class ImageExtractor:
         self.matcher_.match(pano)
         pose_matrices = self.matcher_.poses_from_match(extrinsics)
         path_len = pose_matrices.shape[0]
-        #print(pose_matrices[0].shape)
+        
         # parse rotations and poses
         rotations = pose_matrices[:,:3,:3]
         poses = pose_matrices[:,:-1,-1]
@@ -68,10 +68,7 @@ class ImageExtractor:
 
         rgb = list()
         sem = list()
-
         for i in range(path_len):
-            #print(poses[i])
-            #print(rotations[i])
 
             transform = self.sim_.place_agent(rotations[i], poses[i])
             rgb.append(self.sim_.get_sensor_obs("rgba_camera"))
@@ -84,9 +81,7 @@ class ImageExtractor:
         scene_id = str(subguide['scan'])
         
         self.sim_.update_sim(scene_id)
-
         pose_trace = self.get_pose_trace(instr_id)
-        
         rgb, sem = self.get_frames_from_sim(pose_trace["extrinsic_matrix"], pose_trace["pano"])
 
         if return_sem:

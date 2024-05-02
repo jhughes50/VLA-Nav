@@ -102,7 +102,7 @@ class PoseExtractor:
     def get_path(self, subguide):
         inst_id = subguide['instruction_id']
         pose_path = self.generic_path_+ \
-            "rxr-data/pose_traces/rxr_train/{:06}_guide_pose_trace.npz".format(inst_id)
+            "../rxr-data/pose_traces/rxr_train/{:06}_guide_pose_trace.npz".format(inst_id)
 
         return self.get_path_poses(pose_path)
 
