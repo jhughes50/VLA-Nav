@@ -18,9 +18,9 @@ class PathEncoderTransformer(nn.Module):
         super().__init__()
        
         self.pos_encoder = nn.Parameter(torch.randn(input_dim, 1, model_dim))
-        self.input_projection = nn.Sequential(nn.Conv1d(input_dim, 128, 1), nn.ReLU(),
-                                              nn.Conv1d(128, 256, 1), nn.ReLU(),
-                                              nn.Conv1d(256, model_dim, 1), nn.ReLU())
+        self.input_projection = nn.Sequential(nn.Conv1d(input_dim, 512, 1), nn.ReLU(),
+                                              nn.Conv1d(512, 512, 1), nn.ReLU(),
+                                              nn.Conv1d(512, model_dim, 1), nn.ReLU())
 
 
         encoder_layers = TransformerEncoderLayer(model_dim, num_heads, hidden_dim, dropout)

@@ -14,7 +14,7 @@ class CLIP3D:
 
     def __init__(self, mode, input_path):
 
-        self.img_model_ = VitWrapper(mode)
+        self.img_model_ = ViTWrapper(mode)
         self.txt_model_ = BERTWrapper(mode)
         self.pth_model_ = PathModelWrapper(mode, input_path)
 

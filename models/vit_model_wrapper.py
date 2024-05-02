@@ -5,7 +5,9 @@
 """
 import torch
 from transformers import ViTForImageClassification
+from transformers import ViTModel
 from transformers import ViTImageProcessor
+from transformers import AdamW
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -13,11 +15,13 @@ class ViTWrapper:
 
     def __init__(self, mode):
         
-        self.model_ = ViTForImageClassification.from_pretrained('google/vit-base-patch16-224', num_labels=2)
+        self.model_ = ViTModel.from_pretrained('google/vit-base-patch16-224', output_hidden_states=True)
         self.processor_ = ViTImageProcessor.from_pretrained('google/vit-base-patch16-224', do_rescale = False, return_tensors = 'pt')
         self.model_.to(DEVICE)
-        self.optimizer_ = AdamW(self.model_.parameters, lr=2e-4)
+        self.optimizer_ = AdamW(self.model_.parameters(), lr=2e-4)
         self.set_mode(mode)
+
+        print("[VIT-WRAPPER] model on cuda: ", next(self.model_.parameters()).is_cuda)
 
     def model(self, inputs):
         return self.model_(**inputs)

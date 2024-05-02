@@ -10,6 +10,8 @@ from models.pose_encoder_small import PoseEncoder
 from models.path_encoder_medium import PathEncoderMedium
 from models.path_encoder_large import PathEncoderTransformer
 
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 class PathModelWrapper:
 
     def __init__(self, mode, input_path, size='large'):
@@ -17,15 +19,18 @@ class PathModelWrapper:
         self.model_ = self.init_model(input_path, size)
         self.set_mode(mode)
 
+        self.model_.to(DEVICE)
+        print("[PATH-WRAPPER] model on cuda: ", next(self.model_.parameters()).is_cuda)
+
     def model(self, path):
         return self.model_(path)
 
     def init_model(self, input_path, size):
         with open(input_path+"pretraining_config.yaml") as y:
-            params = yaml.safe_load(input_path+"pretraining_config.yaml")
-        
-        params = params[size]
+            params = yaml.safe_load(y)
 
+        params = params[size]
+        
         if size == 'small':
             model = PoseEncoder(params["input_dim"],
                                 params["hidden_dim"],
@@ -44,7 +49,7 @@ class PathModelWrapper:
                                            params["hidden_dim"],
                                            params["num_layers"],
                                            params["dropout"])
-            model.load_state_dict(torch.load(input_path+"%s_models/encoder_large_epoch2.pth"%size))
+            model.load_state_dict(torch.load(input_path+"%s_models/encoder_large_epoch3.pth"%size))
         else:
             print("[PATH-WRAPPER] Size %s is not defined, use small, medium or large" %size)
             exit()

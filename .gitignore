@@ -10,4 +10,5 @@ data/
 .vim/
 .viminfo
 .nv/
-
+.python_history
+.cache/
