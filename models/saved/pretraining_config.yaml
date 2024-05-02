@@ -1,0 +1,21 @@
+# YAML file to save the architecture at pretraining time
+# for the path encoders
+
+small:
+  input_dim: 96
+  hidden_dim: 512
+  output_dim: 512
+
+medium:
+  input_dim: 96
+  hidden_dim: 256
+  output_dim: 512
+
+large:
+  input_dim: 32
+  hidden_dim: 256
+  output_dim: 512
+  model_dim: 512
+  num_heads: 4
+  num_layers: 6
+  dropout: 0.2
