@@ -1,6 +1,5 @@
 FROM continuumio/miniconda3:latest AS miniconda
 FROM nvidia/cudagl:11.4.2-base-ubuntu20.04
-#FROM nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -27,11 +26,10 @@ USER $USER
 RUN echo ". /opt/conda/etc/profile.d/conda.sh" >> /home/$USER/.bashrc && \
     echo "conda activate base" >> /home/$USER/.bashrc
 SHELL ["/bin/bash", "-c"]
-RUN source /opt/conda/etc/profile.d/conda.sh && conda init bash && conda create -n habitat -y python=3.9 cmake=3.14.0 && conda activate habitat && conda install habitat-sim headless -c conda-forge -c aihabitat -y && conda install pytorch pytorch-cuda=12.1 -c pytorch -c nvidia -y
+RUN source /opt/conda/etc/profile.d/conda.sh && conda init bash && conda create -n habitat -y python=3.9 cmake=3.14.0 && conda activate habitat && conda install habitat-sim headless -c conda-forge -c aihabitat -y && conda install pytorch pytorch-cuda=12.1 -c pytorch -c nvidia -y &&conda install conda-forge::transformers -y
 
 #install CLIP-ViL dependencies
 #RUN pip3 install tqdm stanza tensorboardX openai-clip
 
-#USER $USER
 WORKDIR /home/$USER
 CMD ["bash"]

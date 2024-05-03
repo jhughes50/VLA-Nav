@@ -4,10 +4,12 @@ models/*.pth
 models/saved/*.pth
 models/saved/medium_models/*.pth
 models/saved/large_models/*.pth
+models/saved/clip_models/
 secrets/*.pem
 .bash_history
 data/
 .vim/
 .viminfo
 .nv/
-
+.python_history
+.cache/
