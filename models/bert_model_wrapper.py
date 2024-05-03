@@ -6,10 +6,8 @@
 
 import torch
 from torch import nn
-from transformers import BertModel
-from transformers import AdamW
-from transformers import BertTokenizer
-from transformers import TrainingArguments
+from transformers import RobertaModel
+from transformers import RobertaTokenizer
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -17,10 +15,10 @@ class BERTWrapper:
 
     def __init__(self, mode, input_dim, output_dim):
         
-        self.model_ = BertModel.from_pretrained("google-bert/bert-base-cased")
+        self.model_ = RobertaModel.from_pretrained("FacebookAI/roberta-base")
         self.model_.to(DEVICE)
-        self.tokenizer_ = BertTokenizer.from_pretrained('bert-base-uncased')
-
+        
+        self.tokenizer_ = RobertaTokenizer.from_pretrained("FacebookAI/roberta-base")
         self.down_sample_ = BERTDownSample(input_dim, output_dim)
         self.down_sample_.to(DEVICE)
 
@@ -37,7 +35,7 @@ class BERTWrapper:
         return self.optimizer_
 
     def embed(self, text_batch):
-        return self.tokenizer_(text_batch, return_tensors='pt', padding=True, truncation=False)
+        return self.tokenizer_(text_batch, return_tensors='pt', padding=True, truncation=True)
 
     def set_mode(self, mode):
         if mode == 'train':
