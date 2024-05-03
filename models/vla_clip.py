@@ -22,6 +22,13 @@ class CLIP3D:
 
     def encode_text(self, text):
         emb = self.txt_model_.embed(text)
+        #print(emb)
+        #print(emb['input_ids'].shape)
+        #print(emb['attention_mask'].shape)
+        #if emb['input_ids'].shape[1] > 256:
+        #    emb['input_ids'] = emb['input_ids'][:,:256]
+        #    emb['attention_mask'] = emb['attention_mask'][:,:256]
+        #    emb['token_type_ids'] = emb['token_type_ids'][:,:256]
         outputs = self.txt_model_.model(emb.to(DEVICE))
         return F.normalize(outputs)
 

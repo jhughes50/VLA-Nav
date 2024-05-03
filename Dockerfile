@@ -1,6 +1,8 @@
 FROM continuumio/miniconda3:latest AS miniconda
 FROM nvidia/cudagl:11.4.2-base-ubuntu20.04
 
+LABEL maintainer="Jason Hughes"
+
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update

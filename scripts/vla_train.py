@@ -38,7 +38,7 @@ def train(clip, dataloader, optimizer, batch_size, model_path):
     save = 1000 // batch_size
 
     for text, image, path, labels in dataloader:
-
+        #print(text)
         txt_encoded = clip.encode_text(text)
         img_encoded = clip.encode_image(image)
         pth_encoded = clip.encode_path(path)
@@ -67,7 +67,7 @@ def train(clip, dataloader, optimizer, batch_size, model_path):
             counter = 0
         else:
             counter += 1
-
+        print("[VLA-TRAIN] Loss: ", loss)
         ti_logger.log(loss_ti)
         tp_logger.log(loss_tp)
         ip_logger.log(loss_ip)
