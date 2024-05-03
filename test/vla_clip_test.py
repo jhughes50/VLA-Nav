@@ -16,6 +16,7 @@ from lib.vla_dataset import VLADataset
 from lib.vla_dataloader import VLADataLoader
 
 from models.vla_clip import CLIP3D
+from utils.similarity import VLASimilarity
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -26,8 +27,10 @@ def main(path, model_path):
     dataset = VLADataset(path)
     dataloader = VLADataLoader(dataset, 16)
 
-    for text, image, path in dataloader:
-        image = image[:,:,:,:-1]
+    similarity = VLASimilarity()
+
+    for text, image, path, labels in dataloader:
+        #image = image[:,:,:,:-1]
         print("[TEST] encoding text")
         txt_output = clip.encode_text(text)
         print("[TEST] text output: ", txt_output.shape)
@@ -38,6 +41,11 @@ def main(path, model_path):
         pth_output = clip.encode_path(path)
         print("[TEST] path output: ", pth_output.shape)
 
+        s = similarity.get_logits(img_output, txt_output)
+        print("[TEST] similarity shape: ", s.shape)
+        t = similarity.get_target(img_output, txt_output, pth_output)
+        print("[TEST] target shape: ", t.shape)
+        break
     #for data in dataset:
     #    if data.text != None:
     #        print(len(data.image))

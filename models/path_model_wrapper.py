@@ -56,6 +56,9 @@ class PathModelWrapper:
 
         return model
 
+    def get_params(self):
+        return list(self.model_.parameters())
+
     def set_mode(self, mode):
         if mode == 'train':
             self.model_.train()
@@ -63,3 +66,7 @@ class PathModelWrapper:
             self.model_.eval()
         else:
             print("[PATH-WRAPPER] Mode %s is undefined, use train of eval" %mode)
+
+    def save(self, output_dir, idx):
+        print("[PATH-WRAPPER] Saving model to %s at index %s" %(output_dir, idx))
+        torch.save(self.model_.state_dict(), output_dir+"path-tuned-%s.pth"%idx)

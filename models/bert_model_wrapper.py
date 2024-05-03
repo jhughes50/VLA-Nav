@@ -20,7 +20,6 @@ class BERTWrapper:
         self.model_ = BertModel.from_pretrained("google-bert/bert-base-cased")
         self.model_.to(DEVICE)
         self.tokenizer_ = BertTokenizer.from_pretrained('bert-base-uncased')
-        self.optimizer_ = AdamW(self.model_.parameters(), lr=1e-5)
 
         self.down_sample_ = BERTDownSample(input_dim, output_dim)
         self.down_sample_.to(DEVICE)
@@ -51,8 +50,13 @@ class BERTWrapper:
             print("[BERT-Wrapper] Model mode must be train or eval")
             exit()
 
-    def save(self, output_dir):
-        self.model_.save_pretrained(output_dir+"bert-tuned.pth")
+    def get_params(self):
+        return list(self.model_.parameters()) + list(self.down_sample_.parameters())
+
+    def save(self, output_dir, idx):
+        print("[BERT-WRAPPER] Saving model to %s with index %s" %(output_dir, idx))
+        self.model_.save_pretrained(output_dir+"bert-tuned-%s"%idx, from_pt=True)
+        torch.save(self.down_sample_.state_dict(), output_dir+"bert-linear-%s.pth"%idx)
 
 class BERTDownSample(nn.Module):
 

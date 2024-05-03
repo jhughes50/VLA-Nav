@@ -19,10 +19,12 @@ def main(path):
     dataset = VLADataset(path)
     dataloader = VLADataLoader(dataset, 16)
 
-    for text, image, path in dataloader:
+    for text, image, path, labels in dataloader:
         print(len(text)) 
         print(image.shape)
         print(path.shape)
+        print(labels)
+        print(len(labels))
 
     #for data in dataset:
     #    if data.text != None:

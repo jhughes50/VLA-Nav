@@ -19,7 +19,6 @@ class ViTWrapper:
         self.model_ = ViTModel.from_pretrained('google/vit-base-patch16-224', output_hidden_states=True)
         self.processor_ = ViTImageProcessor.from_pretrained('google/vit-base-patch16-224', do_rescale = False, return_tensors = 'pt')
         self.model_.to(DEVICE)
-        self.optimizer_ = AdamW(self.model_.parameters(), lr=2e-4)
     
         self.down_sample_ = ViTDownSample(input_dim, output_dim)
         self.down_sample_.to(DEVICE)
@@ -51,8 +50,13 @@ class ViTWrapper:
             print("[ViT-WRAPPER] mode %s not supported, must be train or eval")
             exit()
 
-    def save(self, output_dir):
-        self.model_.save_pretrained(output_dir+"vit-tuned.pth")
+    def get_params(self):
+        return list(self.model_.parameters()) + list(self.down_sample_.parameters())
+
+    def save(self, output_dir, idx):
+        print("[VIT-WRAPPER] Saving model to %s at index %s" %(output_dir, idx))
+        self.model_.save_pretrained(output_dir+"vit-tuned-%s"%idx, from_pt=True)
+        torch.save(self.down_sample_.state_dict(), output_dir+"vit-linear-%s.pth"%idx)
 
 
 class ViTDownSample(nn.Module):
