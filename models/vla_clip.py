@@ -14,21 +14,23 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class CLIP3D:
 
-    def __init__(self, mode, input_path, input_dim=768, output_dim=512):
+    def __init__(self,
+                 mode,
+                 input_path,
+                 input_dim=768,
+                 output_dim=512,
+                 img_model_path = None,
+                 txt_model_path = None,
+                 pth_model_path = None):
 
-        self.img_model_ = ViTWrapper(mode, input_dim, output_dim)
-        self.txt_model_ = BERTWrapper(mode, input_dim, output_dim)
-        self.pth_model_ = PathModelWrapper(mode, input_path)
+        print("[CLIP-3D] Getting and setting models to %s mode" %mode)
+
+        self.img_model_ = ViTWrapper(mode, input_dim, output_dim, img_model_path)
+        self.txt_model_ = BERTWrapper(mode, input_dim, output_dim, txt_model_path)
+        self.pth_model_ = PathModelWrapper(mode, input_path, pth_model_path)
 
     def encode_text(self, text):
         emb = self.txt_model_.embed(text)
-        #print(emb)
-        #print(emb['input_ids'].shape)
-        #print(emb['attention_mask'].shape)
-        #if emb['input_ids'].shape[1] > 256:
-        #    emb['input_ids'] = emb['input_ids'][:,:256]
-        #    emb['attention_mask'] = emb['attention_mask'][:,:256]
-        #    emb['token_type_ids'] = emb['token_type_ids'][:,:256]
         outputs = self.txt_model_.model(emb.to(DEVICE))
         return F.normalize(outputs)
 

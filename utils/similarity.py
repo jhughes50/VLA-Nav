@@ -17,9 +17,18 @@ class VLASimilarity:
     def get_logits(self, vec1, vec2):
         return torch.tensordot(vec1, vec2.T, dims=1)
 
-    def get_target(self, img, txt, pth):
-        img_target = img @ img.T
-        txt_target = txt @ txt.T
-        pth_target = pth @ pth.T
+    def get_blocked_logits(self, vec1, vec2):
+        dotted = torch.tensordot(vec1, vec2.T, dims=1)
 
-        return F.softmax((img_target + txt_target + pth_target)/3, dim=-1)
+    def get_target(self, v1, v2):
+        v1_target = torch.tensordot(v1, v1.T, dims=1)
+        v2_target = torch.tensordot(v2, v2.T, dims=1) 
+        return (v1+v2)/2
+        #return F.softmax((v1_target + v2_target)/2, dim=-1)
+
+    def get_correlation_logits(self, img, txt, pth):
+        X = torch.stack((img,txt,pth), dim=0)
+        corr = torch.bmm(X,X.mT)
+        U, S, Vt = torch.linalg.svd(corr)
+
+        return torch.sum(S, dim=0)/3
