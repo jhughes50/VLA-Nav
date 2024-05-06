@@ -14,13 +14,20 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class ViTWrapper:
 
-    def __init__(self, mode, input_dim, output_dim):
-        
-        self.model_ = ViTModel.from_pretrained('google/vit-base-patch16-224', output_hidden_states=True)
+    def __init__(self, mode, input_dim, output_dim, model_path):
+       
+        if model_path == None:
+            self.model_ = ViTModel.from_pretrained('google/vit-base-patch16-224', output_hidden_states=True)
+        else:
+            self.model_ = ViTModel.from_pretrained(model_path, output_hidden_states=True)
+
         self.processor_ = ViTImageProcessor.from_pretrained('google/vit-base-patch16-224', do_rescale = False, return_tensors = 'pt')
         self.model_.to(DEVICE)
     
         self.down_sample_ = ViTDownSample(input_dim, output_dim)
+        if mode == 'eval':
+            num = model_path.split("-")[-1]
+            self.down_sample_.load_state_dict(torch.load(model_path+"/../vit-linear-%s.pth" %num))
         self.down_sample_.to(DEVICE)
 
         self.set_mode(mode)
@@ -65,5 +72,10 @@ class ViTDownSample(nn.Module):
         super().__init__()
         self.linear = nn.Linear(input_dim, output_dim)
 
+    def init_weights(self):
+        initrange = 0.1
+        self.linear.bias.data.zero_()
+        self.linear.weight.data.uniform_(-initrange, initrange)
+    
     def forward(self, pooled):
         return self.linear(pooled)

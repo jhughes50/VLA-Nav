@@ -12,14 +12,19 @@ import quaternion
 
 class ImageExtractor:
 
-    def __init__(self, file_path):
+    def __init__(self, file_path, mode):
         self.matcher_ = Matcher()
         self.sim_ = HabitatWrapper(file_path)
         self.file_path_ = file_path
+        self.mode_ = mode
 
     def get_pose_trace(self, instr_id):
-        data_path = self.file_path_ + \
-            "pose_traces/rxr_train/{:06}_guide_pose_trace.npz".format(int(instr_id))
+        if self.mode_ == 'train':
+            data_path = self.file_path_ + \
+                "pose_traces/rxr_train/{:06}_guide_pose_trace.npz".format(int(instr_id))
+        elif self.mode_ == 'eval':
+            data_path = self.file_path_ + \
+                "pose_traces/rxr_val_seen/{:06}_guide_pose_trace.npz".format(int(instr_id))
         pose_trace = np.load(data_path)
         
         return pose_trace

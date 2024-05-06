@@ -9,9 +9,9 @@ from torch.utils.data import Dataset
 
 class VLADataset(Dataset):
 
-    def __init__(self, file_path):
+    def __init__(self, file_path, mode='train'):
         super().__init__()
-        self.be = BaseExtractor(file_path)
+        self.be = BaseExtractor(file_path, mode)
 
     def __len__(self):
         return len(be.guide)

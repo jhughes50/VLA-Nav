@@ -28,13 +28,13 @@ def train(clip, dataloader, optimizer, batch_size, model_path):
 
     criterion = nn.CrossEntropyLoss()
 
-    ti_logger = LossLogger(model_path+"clip_logs/", 'text-image-2')
-    tp_logger = LossLogger(model_path+"clip_logs/", 'text-path-2')
-    ip_logger = LossLogger(model_path+"clip_logs/", 'image-path-2')
-    total_logger = LossLogger(model_path+"clip_logs/", 'total-2')
+    #ti_logger = LossLogger(model_path+"clip_logs/", 'text-image')
+    #tp_logger = LossLogger(model_path+"clip_logs/", 'text-path')
+    #ip_logger = LossLogger(model_path+"clip_logs/", 'image-path')
+    total_logger = LossLogger(model_path+"clip_logs/", 'total-corr')
 
     counter = 0
-    save_idx = 8
+    save_idx = 0
     save = 1000 // batch_size
 
     for text, image, path, labels in dataloader:
@@ -43,28 +43,18 @@ def train(clip, dataloader, optimizer, batch_size, model_path):
         img_encoded = clip.encode_image(image)
         pth_encoded = clip.encode_path(path)
 
-        sim_it = similarity.get_logits(img_encoded, txt_encoded)
-        sim_tp = similarity.get_logits(txt_encoded, pth_encoded)
-        sim_ip = similarity.get_logits(img_encoded, pth_encoded)
-
-        print(sim_it)
-
         labels = labels.to(DEVICE)
         ip_labels = torch.arange(batch_size).to(DEVICE)
+            
+        ti = (torch.mm(txt_encoded, img_encoded.T) + 1) / 2
+        ip = F.softmax(torch.mm(img_encoded, pth_encoded.T), dim=1)
+        tp = F.softmax(torch.mm(txt_encoded, pth_encoded.T), dim=1)
 
-        #ti_target = similarity.get_target(img_encoded, txt_encoded).to(DEVICE)
-        #tp_target = similarity.get_target(txt_encoded, pth_encoded).to(DEVICE)
-        #ip_target = similarity.get_target(img_encoded, pth_encoded).to(DEVICE)
+        print(ti.shape)
+        print(ti)
+        logits = (ti + ip + tp) / 3
 
-        #loss_ti = (criterion(sim_it, ti_target) + criterion(sim_it.T, ti_target.T)) / 2
-        #loss_tp = (criterion(sim_tp, tp_target) + criterion(sim_tp.T, tp_target.T)) / 2
-        #loss_ip = (criterion(sim_ip, ip_target) + criterion(sim_ip.T, ip_target.T)) / 2
-        
-        loss_ti = (criterion(sim_it, labels) + criterion(sim_it.T, labels)) / 2
-        loss_tp = (criterion(sim_tp, labels) + criterion(sim_tp.T, labels)) / 2
-        loss_ip = (criterion(sim_ip, ip_labels) + criterion(sim_ip.T, ip_labels)) / 2
-
-        loss = (loss_ti + loss_tp + loss_ip) / 3
+        loss = criterion(logits, labels)
 
         optimizer.zero_grad()
         loss.backward()
@@ -78,9 +68,9 @@ def train(clip, dataloader, optimizer, batch_size, model_path):
         else:
             counter += 1
         print("[VLA-TRAIN] Loss: ", loss)
-        ti_logger.log(loss_ti)
-        tp_logger.log(loss_tp)
-        ip_logger.log(loss_ip)
+        #ti_logger.log(loss_ti)
+        #tp_logger.log(loss_tp)
+        #ip_logger.log(loss_ip)
         total_logger.log(loss)
 
 
@@ -96,6 +86,6 @@ if __name__ == "__main__":
 
     clip = CLIP3D('train', model_path)
 
-    optimizer = torch.optim.AdamW(clip.get_params(), lr=1e-5)
+    optimizer = torch.optim.AdamW(clip.get_params(), lr=0.1)
 
     train(clip, dataloader, optimizer, batch_size, model_path)

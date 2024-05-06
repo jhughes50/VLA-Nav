@@ -13,13 +13,22 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class BERTWrapper:
 
-    def __init__(self, mode, input_dim, output_dim):
+    def __init__(self, mode, input_dim, output_dim, model_path):
         
-        self.model_ = RobertaModel.from_pretrained("FacebookAI/roberta-base")
+        if model_path == None:
+            self.model_ = RobertaModel.from_pretrained("FacebookAI/roberta-base")
+        else:
+            self.model_ = RobertaModel.from_pretrained(model_path)
+
         self.model_.to(DEVICE)
         
         self.tokenizer_ = RobertaTokenizer.from_pretrained("FacebookAI/roberta-base")
         self.down_sample_ = BERTDownSample(input_dim, output_dim)
+
+        if mode == 'eval':
+            num = model_path.split("-")[-1]
+            self.down_sample_.load_state_dict(torch.load(model_path+"/../bert-linear-%s.pth" %num))
+ 
         self.down_sample_.to(DEVICE)
 
         self.set_mode(mode)
@@ -61,6 +70,12 @@ class BERTDownSample(nn.Module):
     def __init__(self, input_dim, output_dim):
         super().__init__()
         self.linear = nn.Linear(input_dim, output_dim)
+        #self.init_weights()
+
+    def init_weights(self):
+        initrange = 0.1
+        self.linear.bias.data.zero_()
+        self.linear.weight.data.uniform_(-initrange, initrange)
 
     def forward(self, pooled):
         return self.linear(pooled)

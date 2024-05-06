@@ -14,16 +14,55 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class PathModelWrapper:
 
-    def __init__(self, mode, input_path, size='large'):
+    def __init__(self, mode, input_path, eval_model, size='medium'):
 
-        self.model_ = self.init_model(input_path, size)
+        if eval_model == None:
+            self.model_ = self.init_model(input_path, size)
+        else:
+            self.model_ = self.init_pretrained(input_path, size, eval_model)
+
         self.set_mode(mode)
+        self.size_ = size
+        self.mode_ = mode
 
         self.model_.to(DEVICE)
         print("[PATH-WRAPPER] model on cuda: ", next(self.model_.parameters()).is_cuda)
 
     def model(self, path):
+        if self.size_ != 'large': 
+            path = path.reshape((16,96))
         return self.model_(path)
+
+    def init_pretrained(self, input_path, size, model_path):
+        with open(input_path+"pretraining_config.yaml") as y:
+            params = yaml.safe_load(y)
+
+        params = params[size]
+        
+        if size == 'small':
+            model = PoseEncoder(params["input_dim"],
+                                params["hidden_dim"],
+                                params["output_dim"])
+            model.load_state_dict(torch.load(input_path+"%s_models/"%size))
+        elif size == 'medium': 
+            model = PathEncoderMedium(params["input_dim"],
+                                      params["hidden_dim"],
+                                      params["output_dim"])
+            model.load_state_dict(torch.load(input_path+model_path))
+        elif size == 'large':
+            model = PathEncoderTransformer(params["input_dim"],
+                                           params["output_dim"],
+                                           params["model_dim"],
+                                           params["num_heads"],
+                                           params["hidden_dim"],
+                                           params["num_layers"],
+                                           params["dropout"])
+            model.load_state_dict(torch.load(input_path+model_path))
+        else:
+            print("[PATH-WRAPPER] Size %s is not defined, use small, medium or large" %size)
+            exit()
+
+        return model
 
     def init_model(self, input_path, size):
         with open(input_path+"pretraining_config.yaml") as y:
