@@ -16,15 +16,15 @@ from lib.input_data import InputData
 class BaseExtractor(PoseExtractor, ImageExtractor, TextExtractor):
 
     def __init__(self, path, mode): 
-        PoseExtractor.__init__(self, path)
-        ImageExtractor.__init__(self, path)
+        PoseExtractor.__init__(self, path, mode)
+        ImageExtractor.__init__(self, path, mode)
     
         self.rxr_guide_ = None
         self.generic_path_ = path
         self.load(path, mode)
 
     def load(self, path, mode):
-        if mode = 'train':
+        if mode == 'train':
             path = path + "rxr_train_guide.jsonl.gz"
         else:
             path = path + "rxr_val_seen_guide.jsonl.gz"

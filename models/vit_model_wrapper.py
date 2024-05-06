@@ -15,7 +15,7 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 class ViTWrapper:
 
     def __init__(self, mode, input_dim, output_dim, model_path):
-        
+       
         if model_path == None:
             self.model_ = ViTModel.from_pretrained('google/vit-base-patch16-224', output_hidden_states=True)
         else:
@@ -25,6 +25,9 @@ class ViTWrapper:
         self.model_.to(DEVICE)
     
         self.down_sample_ = ViTDownSample(input_dim, output_dim)
+        if mode == 'eval':
+            num = model_path.split("-")[-1]
+            self.down_sample_.load_state_dict(torch.load(model_path+"/../vit-linear-%s.pth" %num))
         self.down_sample_.to(DEVICE)
 
         self.set_mode(mode)

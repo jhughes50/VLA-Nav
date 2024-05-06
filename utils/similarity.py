@@ -17,6 +17,9 @@ class VLASimilarity:
     def get_logits(self, vec1, vec2):
         return torch.tensordot(vec1, vec2.T, dims=1)
 
+    def get_1d_logits(self, v1, v2):
+        return torch.dot(v1,v2)
+
     def get_blocked_logits(self, vec1, vec2):
         dotted = torch.tensordot(vec1, vec2.T, dims=1)
 

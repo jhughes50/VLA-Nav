@@ -22,3 +22,22 @@ class LossLogger:
             self.file_.write(str(loss)+"\n")
         else:
             self.file_.write("%s--%s\n" %(idx,loss))
+
+
+
+class EvalLogger:
+
+    def __init__(self, output_dir, name):
+
+        self.output_dir_ = output_dir
+
+        self.file_ = open(output_dir+"eval-%s.log" %name, 'w')
+
+    def __del__(self):
+        self.file_.close()
+
+    def log(self, loss, idx=None):
+        self.file_.write(str(loss)+"\n")
+
+
+

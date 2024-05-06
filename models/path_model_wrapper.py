@@ -19,20 +19,21 @@ class PathModelWrapper:
         if eval_model == None:
             self.model_ = self.init_model(input_path, size)
         else:
-            self.model_ = self.init_pretrained(input_path, model_path)
+            self.model_ = self.init_pretrained(input_path, size, eval_model)
 
         self.set_mode(mode)
         self.size_ = size
+        self.mode_ = mode
 
         self.model_.to(DEVICE)
         print("[PATH-WRAPPER] model on cuda: ", next(self.model_.parameters()).is_cuda)
 
     def model(self, path):
-        if self.size_ != 'large':
+        if self.size_ != 'large': 
             path = path.reshape((16,96))
         return self.model_(path)
 
-    def init_pretrained(self, input_path, model_path):
+    def init_pretrained(self, input_path, size, model_path):
         with open(input_path+"pretraining_config.yaml") as y:
             params = yaml.safe_load(y)
 
@@ -60,6 +61,8 @@ class PathModelWrapper:
         else:
             print("[PATH-WRAPPER] Size %s is not defined, use small, medium or large" %size)
             exit()
+
+        return model
 
     def init_model(self, input_path, size):
         with open(input_path+"pretraining_config.yaml") as y:

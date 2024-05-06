@@ -66,13 +66,14 @@ class Interpolator:
 
 class PoseExtractor:
 
-    def __init__(self, path, out_dim=96):
+    def __init__(self, path, mode, out_dim=96):
         self.pose_ = None
         self.train_guide_ = list()
         self.generic_path_ = path
 
         self.matcher_ = Matcher()
         self.interpolator_ = Interpolator(out_dim)
+        self.mode_ = mode
 
         #self.load(path)
 
@@ -101,9 +102,12 @@ class PoseExtractor:
 
     def get_path(self, subguide):
         inst_id = subguide['instruction_id']
-        pose_path = self.generic_path_+ \
-            "../rxr-data/pose_traces/rxr_train/{:06}_guide_pose_trace.npz".format(inst_id)
-
+        if self.mode_ == 'train':
+            pose_path = self.generic_path_+ \
+                "../rxr-data/pose_traces/rxr_train/{:06}_guide_pose_trace.npz".format(inst_id)
+        elif self.mode_ == 'eval':
+            pose_path = self.generic_path_+ \
+                "../rxr-data/pose_traces/rxr_val_seen/{:06}_guide_pose_trace.npz".format(inst_id)
         return self.get_path_poses(pose_path)
 
     def path_from_guide(self, idx):

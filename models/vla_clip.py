@@ -24,6 +24,7 @@ class CLIP3D:
                  pth_model_path = None):
 
         print("[CLIP-3D] Getting and setting models to %s mode" %mode)
+        self.mode_ = mode
 
         self.img_model_ = ViTWrapper(mode, input_dim, output_dim, img_model_path)
         self.txt_model_ = BERTWrapper(mode, input_dim, output_dim, txt_model_path)
@@ -41,7 +42,11 @@ class CLIP3D:
 
     def encode_path(self, path):
         outputs = self.pth_model_.model(path.to(DEVICE))
-        return F.normalize(outputs)
+        if self.mode_ == 'train':
+            return F.normalize(outputs, dim=1)
+        else:
+            outputs = outputs.unsqueeze(0)
+            return F.normalize(outputs, dim=1)
 
     def get_params(self):
         img_params = self.img_model_.get_params()
