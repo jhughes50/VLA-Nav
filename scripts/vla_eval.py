@@ -52,6 +52,9 @@ def eval(clip, dataset, model_path):
     cls_count = 0
 
     for data in dataset:
+        if data.text == None:
+            continue
+
         path = data.path
 
         paths = generate_paths(data.path)
