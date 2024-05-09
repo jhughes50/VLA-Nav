@@ -6,6 +6,8 @@
 
 import torch
 import torch.nn.functional as F
+import torch.nn as nn
+import numpy as np
 from models.bert_model_wrapper import BERTWrapper
 from models.vit_model_wrapper import ViTWrapper
 from models.path_model_wrapper import PathModelWrapper
@@ -25,10 +27,14 @@ class CLIP3D:
 
         print("[CLIP-3D] Getting and setting models to %s mode" %mode)
         self.mode_ = mode
-
+        self.temp_ = Temperature()
         self.img_model_ = ViTWrapper(mode, input_dim, output_dim, img_model_path)
         self.txt_model_ = BERTWrapper(mode, input_dim, output_dim, txt_model_path)
         self.pth_model_ = PathModelWrapper(mode, input_path, pth_model_path)
+
+    @property
+    def temp(self):
+        return self.temp_.temp
 
     def encode_text(self, text):
         emb = self.txt_model_.embed(text)
@@ -52,10 +58,21 @@ class CLIP3D:
         img_params = self.img_model_.get_params()
         txt_params = self.txt_model_.get_params()
         pth_params = self.pth_model_.get_params()
+        tmp_params = list(self.temp_.parameters())
 
-        return img_params + txt_params + pth_params
+        return img_params + txt_params + pth_params + tmp_params
 
     def save(self, output_dir, idx):
         self.txt_model_.save(output_dir, idx)
         self.img_model_.save(output_dir, idx)
         self.pth_model_.save(output_dir, idx)
+
+class Temperature(nn.Module):
+
+    def __init__(self):
+        super().__init__()
+        self.p_ = nn.Parameter(torch.ones([]) * np.log(1/0.07))
+
+    @property
+    def temp(self):
+        return torch.exp(self.p_)

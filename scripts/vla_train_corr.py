@@ -46,14 +46,7 @@ def train(clip, dataloader, optimizer, batch_size, model_path):
         labels = labels.to(DEVICE)
         ip_labels = torch.arange(batch_size).to(DEVICE)
             
-        ti = (torch.mm(txt_encoded, img_encoded.T) + 1) / 2
-        ip = F.softmax(torch.mm(img_encoded, pth_encoded.T), dim=1)
-        tp = F.softmax(torch.mm(txt_encoded, pth_encoded.T), dim=1)
-
-        print(ti.shape)
-        print(ti)
-        logits = (ti + ip + tp) / 3
-
+        logits = similarity.get_correlation_logits(img_encoded, txt_encoded, pth_encoded)
         loss = criterion(logits, labels)
 
         optimizer.zero_grad()
@@ -86,6 +79,6 @@ if __name__ == "__main__":
 
     clip = CLIP3D('train', model_path)
 
-    optimizer = torch.optim.AdamW(clip.get_params(), lr=0.1)
+    optimizer = torch.optim.AdamW(clip.get_params(), lr=1e-3)
 
     train(clip, dataloader, optimizer, batch_size, model_path)

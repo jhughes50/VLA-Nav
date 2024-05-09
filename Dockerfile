@@ -12,8 +12,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends python3-pip git
 RUN apt-get install -y --no-install-recommends libjsoncpp-dev libepoxy-dev libglm-dev libosmesa6 libosmesa6-dev libglew-dev libopencv-dev
 
 # Add user
-ARG GID=1000
-ARG UID=1000
+ARG GID=1011
+ARG UID=1011
 ENV USER jasonah
 RUN addgroup --gid $GID $USER 
 RUN useradd --system --create-home --shell /bin/bash --groups sudo -p "$(openssl passwd -1 ${USER})" --uid $UID --gid $GID $USER
