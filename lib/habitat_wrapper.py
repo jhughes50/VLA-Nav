@@ -15,7 +15,7 @@ class HabitatWrapper:
         self.sim_ = None
         self.prev_scene_id_ = None
         self.file_path_ = file_path
-        self.camera_res_ = [240, 320]
+        self.camera_res_ = [384, 384]
 
     def __del__(self):
         if not isinstance(None, type(None)):

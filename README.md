@@ -1,5 +1,5 @@
 ## VLA-Nav
-Embedding Vision-Language-Actions for learning robot navigation
+Embedding Vision-Language-Actions for learning robot navigation. This is the final version that was handed in as the CIS-6200, Advanced Topics in Deep Learning Final Project.
 
 ## Running Docker
 Build the image with `docker build --rm -t vla-docker .`. You'll have to change the username in the `Dockerfile`. Once it is built run with `./docker_run.sh`. Once again you'll need to change the file path after the second `-v` to where your data is. You can also configure what gpus you are using, use `--gpus all` to use all of them.
