@@ -6,7 +6,7 @@
 
 import torch
 from torch.utils.data import Dataset
-from lib.pose_extractor import PoseExtractor
+from preprocess.pose_extractor import PoseExtractor
 
 class PathDataLoader(Dataset, PoseExtractor):
 

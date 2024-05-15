@@ -12,8 +12,8 @@ import numpy as np
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__),os.pardir))
 sys.path.append(PROJECT_ROOT)
 
-from lib.vla_dataset import VLADataset
-from lib.vla_dataloader import VLADataLoader
+from sets.vla_dataset import VLADataset
+from sets.vla_dataloader import VLADataLoader
 
 from models.vla_clip import CLIP3D
 from utils.similarity import VLASimilarity

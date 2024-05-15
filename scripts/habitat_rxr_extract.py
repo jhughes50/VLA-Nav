@@ -12,7 +12,7 @@ import numpy as np
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__),os.pardir))
 sys.path.append(PROJECT_ROOT)
 
-from lib.base_extractor import BaseExtractor
+from preprocess.base_extractor import BaseExtractor
 
 READ_PATH = '/home/jasonah/data/rxr-data/'
 WRITE_PATH = '/home/jasonah/data/rxr-data/'

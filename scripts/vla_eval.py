@@ -12,8 +12,8 @@ sys.path.append(PROJECT_ROOT)
 
 from models.vla_clip import CLIP3D
 
-from lib.vla_dataset import VLADataset
-from lib.vla_dataloader import VLADataLoader
+from sets.vla_dataset import VLADataset
+from sets.vla_dataloader import VLADataLoader
 
 from utils.similarity import VLASimilarity
 from utils.metrics import VLAMetrics

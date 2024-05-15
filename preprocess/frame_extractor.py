@@ -7,7 +7,7 @@
 import numpy as np
 from scipy.spatial.transform import Rotation
 from utils.matcher import Matcher
-from lib.habitat_wrapper import HabitatWrapper
+from preprocess.habitat_wrapper import HabitatWrapper
 import quaternion
 
 class ImageExtractor:
