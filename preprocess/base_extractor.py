@@ -7,11 +7,11 @@
 import json
 import gzip
 
-from lib.pose_extractor import PoseExtractor
-from lib.frame_extractor import ImageExtractor
-from lib.text_extractor import TextExtractor
+from preprocess.pose_extractor import PoseExtractor
+from preprocess.frame_extractor import ImageExtractor
+from preprocess.text_extractor import TextExtractor
 
-from lib.input_data import InputData
+from sets.input_data import InputData
 
 class BaseExtractor(PoseExtractor, ImageExtractor, TextExtractor):
 

@@ -11,10 +11,11 @@ import numpy as np
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__),os.pardir))
 sys.path.append(PROJECT_ROOT)
 
-from lib.pose_extractor import PoseExtractor
+from preprocess.pose_extractor import PoseExtractor
 
 def main(path):
-    pe = PoseExtractor(path)
+    pe = PoseExtractor(path, 'train')
+    pe.load()
     print(len(pe.train_guide_))
     #path = pe.path_from_guide(23)
     path = np.array([[1,1,1],[2,2,2],[3,3,3],[4,4,4],[5,5,5],[6,6,6],[7,7,7]])
@@ -24,6 +25,6 @@ def main(path):
 
 if __name__ == "__main__":
 
-    path = "/home/vla-docker/data/VLA-Nav-Data/rxr-data/rxr_train_guide.jsonl.gz"
+    path = "/home/jasonah/data/"
     main( path )
 

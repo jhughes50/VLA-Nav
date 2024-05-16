@@ -4,7 +4,7 @@
     April 2024
 """
 
-from lib.base_extractor import BaseExtractor
+from preprocess.base_extractor import BaseExtractor
 from torch.utils.data import Dataset
 
 class VLADataset(Dataset):

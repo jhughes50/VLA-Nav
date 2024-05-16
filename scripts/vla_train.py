@@ -14,8 +14,8 @@ sys.path.append(PROJECT_ROOT)
 
 from models.vla_clip import CLIP3D
 
-from lib.vla_dataset import VLADataset
-from lib.vla_dataloader import VLADataLoader
+from sets.vla_dataset import VLADataset
+from sets.vla_dataloader import VLADataLoader
 
 from utils.similarity import VLASimilarity
 from utils.loss_logger import LossLogger
@@ -43,9 +43,9 @@ def train(clip, dataloader, optimizer, batch_size, model_path):
         img_encoded = clip.encode_image(image)
         pth_encoded = clip.encode_path(path)
 
-        sim_it = similarity.get_logits(img_encoded, txt_encoded)
-        sim_tp = similarity.get_logits(txt_encoded, pth_encoded)
-        sim_ip = similarity.get_logits(img_encoded, pth_encoded)
+        sim_it = similarity.get_logits(img_encoded, txt_encoded) * clip.temp
+        sim_tp = similarity.get_logits(txt_encoded, pth_encoded) * clip.temp
+        sim_ip = similarity.get_logits(img_encoded, pth_encoded) * clip.temp
 
         print(sim_it)
 
@@ -60,9 +60,9 @@ def train(clip, dataloader, optimizer, batch_size, model_path):
         #loss_tp = (criterion(sim_tp, tp_target) + criterion(sim_tp.T, tp_target.T)) / 2
         #loss_ip = (criterion(sim_ip, ip_target) + criterion(sim_ip.T, ip_target.T)) / 2
         
-        loss_ti = (criterion(sim_it, labels) + criterion(sim_it.T, labels)) / 2
-        loss_tp = (criterion(sim_tp, labels) + criterion(sim_tp.T, labels)) / 2
-        loss_ip = (criterion(sim_ip, ip_labels) + criterion(sim_ip.T, ip_labels)) / 2
+        loss_ti = (criterion(sim_it, labels) + criterion(sim_it.T, ip_labels) ) / 2
+        loss_tp = (criterion(sim_tp, labels) + criterion(sim_tp.T, ip_labels) ) / 2
+        loss_ip = (criterion(sim_ip, ip_labels) + criterion(sim_ip.T, ip_labels) ) / 2
 
         loss = (loss_ti + loss_tp + loss_ip) / 3
 
@@ -96,6 +96,6 @@ if __name__ == "__main__":
 
     clip = CLIP3D('train', model_path)
 
-    optimizer = torch.optim.AdamW(clip.get_params(), lr=1e-5)
+    optimizer = torch.optim.SGD(clip.get_params(), lr=1e-5)
 
     train(clip, dataloader, optimizer, batch_size, model_path)

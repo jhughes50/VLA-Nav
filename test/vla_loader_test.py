@@ -11,8 +11,8 @@ import numpy as np
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__),os.pardir))
 sys.path.append(PROJECT_ROOT)
 
-from lib.vla_dataset import VLADataset
-from lib.vla_dataloader import VLADataLoader
+from sets.vla_dataset import VLADataset
+from sets.vla_dataloader import VLADataLoader
 
 def main(path):
 
@@ -25,7 +25,7 @@ def main(path):
         print(path.shape)
         print(labels)
         print(len(labels))
-
+        break
     #for data in dataset:
     #    if data.text != None:
     #        print(len(data.image))

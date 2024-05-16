@@ -14,7 +14,7 @@ from PIL import Image
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__),os.pardir))
 sys.path.append(PROJECT_ROOT)
 
-from lib.frame_extractor import ImageExtractor
+from preprocess.frame_extractor import ImageExtractor
 
 
 def print_images(images):
@@ -26,7 +26,7 @@ def print_images(images):
 
 
 def main(path):
-    im = ImageExtractor(path)
+    im = ImageExtractor(path, 'train')
 
     counter = 0
     guide = list()

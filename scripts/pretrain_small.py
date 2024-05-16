@@ -11,8 +11,9 @@ import sys
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__),os.pardir))
 sys.path.append(PROJECT_ROOT)
 
-from lib.path_dataloader import PathDataLoader
-from lib.pose_extractor import PoseExtractor
+from sets.path_dataloader import PathDataLoader
+from preprocess.pose_extractor import PoseExtractor
+
 from models.pose_encoder_small import PoseEncoder
 from models.pose_decoder_small import PoseDecoder
 

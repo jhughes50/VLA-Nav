@@ -75,7 +75,6 @@ class PoseExtractor:
         self.interpolator_ = Interpolator(out_dim)
         self.mode_ = mode
 
-        #self.load(path)
 
     def interpolate(self, path):
         return self.interpolator_.interpolate(path)

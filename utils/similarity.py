@@ -26,12 +26,13 @@ class VLASimilarity:
     def get_target(self, v1, v2):
         v1_target = torch.tensordot(v1, v1.T, dims=1)
         v2_target = torch.tensordot(v2, v2.T, dims=1) 
-        return (v1+v2)/2
-        #return F.softmax((v1_target + v2_target)/2, dim=-1)
+        #return (v1+v2)/2
+        return F.softmax((v1_target + v2_target)/2, dim=-1)
 
     def get_correlation_logits(self, img, txt, pth):
+        # this is wrong
         X = torch.stack((img,txt,pth), dim=0)
         corr = torch.bmm(X,X.mT)
         U, S, Vt = torch.linalg.svd(corr)
-
+        print(S)
         return torch.sum(S, dim=0)/3
