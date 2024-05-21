@@ -82,12 +82,12 @@ class VLAProcessedDataset(Dataset):
     def __getitem__(self, idx):
         pth_file = self.file_guide_[2*idx].split('\n')[0]
         jpg_file = self.file_guide_[2*idx+1].split('\n')[0]
-        
+        print(pth_file) 
         iid = pth_file.split('_')[0]
         
         agent_path = self.get_path(pth_file)
         agent_img  = self.get_image(jpg_file)
         agent_txt  = self.get_text(iid)
         
-        return agent_path, agent_img, agent_txt
+        return agent_txt, agent_img, agent_path
 
