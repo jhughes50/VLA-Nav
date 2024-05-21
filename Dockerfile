@@ -28,7 +28,13 @@ USER $USER
 RUN echo ". /opt/conda/etc/profile.d/conda.sh" >> /home/$USER/.bashrc && \
     echo "conda activate base" >> /home/$USER/.bashrc
 SHELL ["/bin/bash", "-c"]
-RUN source /opt/conda/etc/profile.d/conda.sh && conda init bash && conda create -n habitat -y python=3.9 cmake=3.14.0 && conda activate habitat && conda install habitat-sim headless -c conda-forge -c aihabitat -y && conda install pytorch pytorch-cuda=12.1 -c pytorch -c nvidia -y &&conda install conda-forge::transformers -y
+RUN source /opt/conda/etc/profile.d/conda.sh \
+ && conda init bash \ 
+ && conda create -n habitat -y python=3.9 cmake=3.14.0 \
+ && conda activate habitat \
+ && conda install habitat-sim headless -c conda-forge -c aihabitat -y \
+ && conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia -y \
+ && conda install conda-forge::transformers -y
 
 #install CLIP-ViL dependencies
 #RUN pip3 install tqdm stanza tensorboardX openai-clip
